@@ -1,0 +1,72 @@
+presence:
+  "*":
+    allow: "user.data.role === 'server'"
+record:
+  "*":
+    create: false
+    write: false
+    read: false
+    delete: false
+    listen: false
+  "messages/$userId":
+    create: "user.data.role === 'server'"
+    write: "user.data.role === 'server'"
+    read: "user.data.role === 'server' || ((user.data.role === 'participant' || user.data.role === 'supervisor' || user.data.role === 'observer') && user.data.user === $userId)"
+    delete: "user.data.role === 'server'"
+    listen: "user.data.role === 'server'"
+  "dashboard/$userId":
+    create: "user.data.role === 'server'"
+    write: "user.data.role === 'server'"
+    read: "user.data.role === 'server' || ((user.data.role === 'participant' || user.data.role === 'team-manager') && user.data.user === $userId)"
+    delete: "user.data.role === 'server'"
+    listen: "user.data.role === 'server'"
+  "external-systems/$systemId":
+    create: "user.data.role === 'server'"
+    write: "user.data.role === 'server'"
+    read: "user.data.role === 'server' || (user.data.role === 'external-system' && user.data.systemId === $systemId)"
+    delete: "user.data.role === 'server'"
+    listen: "user.data.role === 'server'"
+event:
+  "*":
+    publish: false
+    subscribe: false
+    listen: false
+  "message-update/$userId":
+    publish: "user.data.role === 'server'"
+    subscribe: "(user.data.role === 'participant' || user.data.role === 'supervisor' || user.data.role === 'observer') && user.data.user === $userId"
+    listen: "(user.data.role === 'participant' || user.data.role === 'supervisor' || user.data.role === 'observer') && user.data.user === $userId"
+  "dashboard-update/$userId":
+    publish: "user.data.role === 'server'"
+    subscribe: "(user.data.role === 'participant' || user.data.role === 'team-manager') && user.data.user === $userId"
+    listen: "(user.data.role === 'participant' || user.data.role === 'team-manager') && user.data.user === $userId"
+rpc:
+  "*":
+    provide: false
+    request: false
+  "message-diff":
+    provide: "user.data.role === 'server'"
+    request: "(user.data.role === 'participant' || user.data.role === 'supervisor' || user.data.role === 'observer') && user.data.user === data.user"
+  "dashboard-diff":
+    provide: "user.data.role === 'server'"
+    request: "(user.data.role === 'participant' || user.data.role === 'team-manager') && user.data.user === data.user"
+  "user-message":
+    provide: "user.data.role === 'server'"
+    request: "user.data.role === 'participant' && user.data.user === data.user"
+  "dashboard-message":
+    provide: "user.data.role === 'server'"
+    request: "(user.data.role === 'participant' || user.data.role === 'team-manager') && user.data.user === data.user"
+  "user-intention":
+    provide: "user.data.role === 'server'"
+    request: "user.data.role === 'participant' && user.data.user === data.user"
+  "user-variable":
+    provide: "user.data.role === 'server'"
+    request: "user.data.role === 'participant' && user.data.user === data.user"
+  "rest-token":
+    provide: "user.data.role === 'server'"
+    request: "user.data.role === 'participant' && user.data.user === data.user"
+  "push-token":
+    provide: "user.data.role === 'server'"
+    request: "(user.data.role === 'participant' || user.data.role === 'supervisor') && user.data.user === data.user"
+  "external-message":
+    provide: "user.data.role === 'server'"
+    request: "user.data.role === 'external-system' && user.data.systemId === data.systemId"  

@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  mongodbservice:
+    image: mobilecoach/mongodb:basic
+    environment:
+      - MONGO_INITDB_DATABASE=mc
+    volumes:
+      - ./mc_global/mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  tomcatservice:
+    build: ./tomcat
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    environment:
+      JPDA_ADDRESS: 8000
+      JPDA_TRANSPORT: dt_socket
+    depends_on: 
+      - mongodbservice
+      - deepstreamservice
+    volumes:
+      - ./mc_global/mc_data:/mc_data 
+
+  deepstreamservice:
+    build: ./deepstream.io/1.0
+    ports:
+      - "6020:6020"
+      - "6021:6021"
+    depends_on: 
+      - mongodbservice
