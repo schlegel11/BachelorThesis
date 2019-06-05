@@ -1,0 +1,3 @@
+[submodule "MobileCoach"]
+	path = MobileCoach
+	url = ../MobileCoach.git
